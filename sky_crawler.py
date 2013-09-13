@@ -1,6 +1,7 @@
 import networkx as nx
 from selenium import selenium
 
+import re
 import urlparse
 import time
 import traceback
@@ -15,6 +16,10 @@ INIT_YEAR = "2013"
 PRICE_LIMIT = 100
 MAX_FLIGHTS = 2
 CRAWL_TIMEOUT = 7.5 # seconds
+
+WEB_LANGUAGE = "pl"
+WEB_CURRENCY = "pln"
+WEB_USRPLACE = "PL"
 
 #__________________________________________________________________
     
@@ -36,13 +41,18 @@ class Crawler():
         self.to_visit = set()
         self.visited = set()
         
-        print 'Initializing selenium...'
-        self.browser = selenium("localhost", 4444, "*chrome", self.tpl_url.format(COUNTRY=self.init_country,
-                                                                                  YEAR=self.init_year,
-                                                                                  MONTH=self.init_month))
-        self.browser.start()
-        
     def crawl(self):
+        print 'Initializing selenium...'
+        self.browser = selenium("localhost", 4444, "*chrome", "http://www.skyscanner.net/")
+        self.browser.start()
+        self.browser.open("http://www.skyscanner.net/")
+        self.browser.delete_all_visible_cookies()
+        self.browser.create_cookie(u'scanner=usrplace:::{WEB_USRPLACE}&lang:::{WEB_LANGUAGE}&currency:::{WEB_CURRENCY}&fromCy:::{WEB_USRPLACE}&from:::{WEB_USRPLACE}'.format(
+            WEB_LANGUAGE=WEB_LANGUAGE,
+            WEB_CURRENCY=WEB_CURRENCY,
+            WEB_USRPLACE=WEB_USRPLACE
+            ),
+            "path=/")
     
         self.links.add_node(self.init_country)
         self.to_visit.add(self.init_country)
@@ -74,7 +84,7 @@ class Crawler():
                                   MONTH=self.init_month)
         self._load_flights_and_wait(url)
         
-        print 'Extracting flights for {0}...'.format(current_link)
+        print 'Extracting {0} flights for {1}...'.format(self.num_of_flights, current_link)
 
         for i in range(1, self.num_of_flights+1):
             ct = self.browser.get_text("//*[@id=\"browse-data-table\"]/tbody/tr[{0}]/td[1]/a".format(i))
@@ -83,7 +93,7 @@ class Crawler():
             cd = cd.lower()
             self.country_names[cd] = ct
             pr = self.browser.get_text("//*[@id=\"browse-data-table\"]/tbody/tr[{0}]/td[3]/a".format(i))
-            pr = ''.join(pr.split(' ')[:-1]) # remove space and join
+            pr = re.sub("[^0-9]", "", pr)
             try:
                 pr = int(pr)
             except Exception: # if text
@@ -123,7 +133,9 @@ class Crawler():
             if self.num_of_flights > 0:
                 break
             time.sleep(1)
+            print "[phase 1] waiting (flights: {0}, tour: {1})...".format(self.num_of_flights, i+1)
         else:
+            print 'Warning! No flights detected on the page!'
             return
         
         for i in range(self.crawl_timeout):
@@ -135,8 +147,10 @@ class Crawler():
                 break
             else:
                 time.sleep(1)
+                print "[phase 2] waiting (flights: {0}, tour: {1})...".format(self.num_of_flights, i+1)
         else:
             print 'Page not fully loaded!'
+            
     
     def close(self):
         print 'Closing selenium...'
@@ -148,6 +162,8 @@ if __name__ == "__main__":
                 PRICE_LIMIT, MAX_FLIGHTS, CRAWL_TIMEOUT)
     try:
         c.crawl()
+    except KeyboardInterrupt:
+        print "Ctrl-C pressed..."
     except Exception as err:
         traceback.print_exc(file=sys.stdout)
     finally:
