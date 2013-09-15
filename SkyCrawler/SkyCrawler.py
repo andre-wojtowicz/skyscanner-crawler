@@ -31,13 +31,16 @@ DEPARTURE_POINT   = "pl"
 NEXT_MONTH_DATE   = date.today()+timedelta(30)
 DEPARTURE_MONTH   = strftime("%B", (NEXT_MONTH_DATE.timetuple())).lower() # next month, eg. "october"
 DEPARTURE_YEAR    = NEXT_MONTH_DATE.year
-PRICE_LIMIT       = 100
+PRICE_LIMIT       = 50
 FLIGHTS_LIMIT     = 2
 
 SELENIUM_HOST         = "localhost"
 SELENIUM_PORT         = 4444
 SELENIUM_START_CMD    = "*chrome"
 SELENIUM_LOAD_TIMEOUT = 7.5 # seconds
+
+MAP_SAVE_TO_DOT  = True
+MAP_DOT_FILENAME = "map.dot"
 
 OUTPUT_ENCODING = "utf-8"
 
@@ -57,6 +60,8 @@ if __name__ == "__main__":
                 SELENIUM_PORT,
                 SELENIUM_START_CMD,
                 SELENIUM_LOAD_TIMEOUT,
+                MAP_SAVE_TO_DOT,
+                MAP_DOT_FILENAME,
                 OUTPUT_ENCODING)
 
     try:

@@ -21,6 +21,8 @@ class Crawler(object):
                        selenium_port,
                        selenium_start_cmd,
                        selenium_load_timeout,
+                       map_save_to_dot,
+                       map_dot_filename,
                        output_encoding):
 
         print('Initializing crawler...')
@@ -39,10 +41,12 @@ class Crawler(object):
         self.flights_map  = FlightsMap(price_limit, departure_point)
         self.map_analyzer = MapAnalyzer(webpage_currency, output_encoding)
 
-        self.departure_point = departure_point
-        self.price_limit     = price_limit
-        self.flights_limit   = flights_limit
-        self.output_encoding = output_encoding
+        self.departure_point  = departure_point
+        self.price_limit      = price_limit
+        self.flights_limit    = flights_limit
+        self.map_save_to_dot  = map_save_to_dot
+        self.map_dot_filename = map_dot_filename
+        self.output_encoding  = output_encoding
         
     def create_map(self):
         
@@ -62,6 +66,12 @@ class Crawler(object):
                                        self.price_limit, 
                                        self.flights_limit, 
                                        self.departure_point)
+
+        if (self.map_save_to_dot):
+            try:
+                self.flights_map.save_as_dot(self.map_dot_filename)
+            except Exception as err:
+                print("Can't save map as dot file. Error message: {0}".format(str(err)))
         
     def cleanup(self):
 
