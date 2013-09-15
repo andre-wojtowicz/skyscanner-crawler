@@ -15,7 +15,7 @@ class MapAnalyzer(object):
         print("Flights from {0}:".format(flights_map.points_names[departure_point].encode(self.output_encoding)))
 
         costs, paths = nx.single_source_dijkstra(flights_map.map, departure_point)
-        self._find_cycle_from_dep_point(flights_map.map, departure_point, costs, paths)
+        self._find_cycle_from_dep_point(flights_map.map, departure_point, costs, paths, price_limit)
 
         price_w = len(str(max(costs)))
         
@@ -33,11 +33,11 @@ class MapAnalyzer(object):
             print("")
 
     @staticmethod
-    def  _find_cycle_from_dep_point(map, point, costs, paths):
+    def  _find_cycle_from_dep_point(map, point, costs, paths, price_limit):
 
         costs[point] = float("inf")
         
-        if map.edge[point].has_key(point):
+        if map.edge[point].has_key(point) and map.edge[point][point]["weight"] <= price_limit:
             costs[point] = map.edge[point][point]["weight"]
 
         map.add_node("point_copy")
@@ -47,7 +47,7 @@ class MapAnalyzer(object):
 
         copy_cost, copy_path = nx.single_source_dijkstra(map, point, "point_copy")
 
-        if copy_cost["point_copy"] < costs[point]:
+        if copy_cost["point_copy"] < costs[point] and copy_cost["point_copy"] <= price_limit:
             costs[point] = copy_cost["point_copy"]
             paths[point] = copy_path["point_copy"]
 

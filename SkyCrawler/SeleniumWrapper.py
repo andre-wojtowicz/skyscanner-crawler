@@ -38,6 +38,9 @@ class SeleniumWrapper(object):
         self.num_of_flights = -1
 
         self.browser = selenium(self.host, self.port, self.start_cmd, self.root_url)
+
+    def prepare_browser(self):
+
         try:
             self.browser.start()
         except Exception as err:

@@ -50,6 +50,8 @@ class Crawler(object):
         self.output_encoding  = output_encoding
         
     def create_map(self):
+
+        self.selenium_wrapper.prepare_browser()
         
         while self.flights_map.points_to_visit() > 0:
             print("Points to check: {0}".format(self.flights_map.points_to_visit()))
