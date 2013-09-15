@@ -25,6 +25,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Crawler.py" />
+    <Compile Include="MapAnalyzer.py" />
+    <Compile Include="FlightsMap.py" />
+    <Compile Include="SeleniumWrapper.py" />
     <Compile Include="SkyCrawler.py" />
   </ItemGroup>
   <ItemGroup>
