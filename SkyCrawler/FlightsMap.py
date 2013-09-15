@@ -4,7 +4,7 @@ import networkx as nx
 
 class FlightsMap(object):
 
-    def __init__(self, price_limit, departure_point):
+    def __init__(self, price_limit, departure_point, ignored_points):
         
         self.price_limit     = price_limit
         self.departure_point = departure_point
@@ -17,22 +17,26 @@ class FlightsMap(object):
         self.map.add_node(self.departure_point)
         self.to_visit.add(self.departure_point)
 
-    def process_connection(self, from_point, to_point_name, to_point_code, to_point_price):
+        if ignored_points != None:
+            for point in ignored_points:
+                self.visited.add(point)
+
+    def process_connection(self, from_point_code, to_point_name, to_point_code, to_point_price):
 
         self.points_names[to_point_code] = to_point_name
             
         if to_point_price > self.price_limit:
             return False # break
                 
-        if from_point != self.departure_point:
+        if from_point_code != self.departure_point and to_point_code != self.departure_point:
             if to_point_code in self.map.nodes():
-                if nx.dijkstra_path_length(self.map, self.departure_point, from_point) + to_point_price >= nx.dijkstra_path_length(self.map, self.departure_point, to_point_code):
+                if nx.dijkstra_path_length(self.map, self.departure_point, from_point_code) + to_point_price >= nx.dijkstra_path_length(self.map, self.departure_point, to_point_code):
                     return True # continue
-            elif nx.dijkstra_path_length(self.map, self.departure_point, from_point) + to_point_price > self.price_limit:
+            elif nx.dijkstra_path_length(self.map, self.departure_point, from_point_code) + to_point_price > self.price_limit:
                 return True # continue
             
         self.map.add_node(to_point_code)
-        self.map.add_edge(from_point, to_point_code, label=to_point_price, weight=to_point_price)
+        self.map.add_edge(from_point_code, to_point_code, label=to_point_price, weight=to_point_price)
             
         if to_point_code not in self.visited:
             self.to_visit.add(to_point_code)

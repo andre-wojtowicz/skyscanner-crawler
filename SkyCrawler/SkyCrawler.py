@@ -28,10 +28,12 @@ WEBPAGE_CURRENCY = "pln"
 WEBPAGE_USRPLACE = "PL"
 
 DEPARTURE_POINT   = "pl"
+IGNORED_POINTS    = None # list
 NEXT_MONTH_DATE   = date.today()+timedelta(30)
 DEPARTURE_MONTH   = strftime("%B", (NEXT_MONTH_DATE.timetuple())).lower() # next month, eg. "october"
 DEPARTURE_YEAR    = NEXT_MONTH_DATE.year
-PRICE_LIMIT       = 50
+
+PRICE_LIMIT       = 200
 FLIGHTS_LIMIT     = 2
 
 SELENIUM_HOST         = "localhost"
@@ -39,7 +41,7 @@ SELENIUM_PORT         = 4444
 SELENIUM_START_CMD    = "*chrome"
 SELENIUM_LOAD_TIMEOUT = 7.5 # seconds
 
-MAP_SAVE_TO_DOT  = True
+MAP_SAVE_TO_DOT  = False
 MAP_DOT_FILENAME = "map.dot"
 
 OUTPUT_ENCODING = "utf-8"
@@ -52,6 +54,7 @@ if __name__ == "__main__":
                 WEBPAGE_CURRENCY,
                 WEBPAGE_USRPLACE,
                 DEPARTURE_POINT,
+                IGNORED_POINTS,
                 DEPARTURE_MONTH,
                 DEPARTURE_YEAR,
                 PRICE_LIMIT,

@@ -13,6 +13,7 @@ class Crawler(object):
                        webpage_currency,
                        webpage_usrplace,
                        departure_point,
+                       ignored_points,
                        departure_month,
                        departure_year,
                        price_limit,
@@ -38,7 +39,7 @@ class Crawler(object):
                                                 departure_year,
                                                 output_encoding)
 
-        self.flights_map  = FlightsMap(price_limit, departure_point)
+        self.flights_map  = FlightsMap(price_limit, departure_point, ignored_points)
         self.map_analyzer = MapAnalyzer(webpage_currency, output_encoding)
 
         self.departure_point  = departure_point
