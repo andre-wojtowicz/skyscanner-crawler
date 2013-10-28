@@ -70,12 +70,13 @@ class SeleniumWrapper(object):
         print('processing {0} flights...'.format(self.num_of_flights))
 
         for i in range(1, self.num_of_flights+1):
-            point_name = self.browser.get_text("//*[@id=\"browse-data-table\"]/tbody/tr[{0}]/td[1]/a".format(i))
-            point_code = self.browser.get_attribute("//*[@id=\"browse-data-table\"]/tbody/tr[{0}]/td[1]/a@href".format(i))
-            point_code = urlparse.parse_qs(point_code)['iplace'][0]
+            point_name = self.browser.get_text("//*[@id=\"browse\"]/div[2]/div[4]/table/tbody/tr[{0}]/td[1]/a".format(i))
+            point_code = self.browser.get_attribute("//*[@id=\"browse\"]/div[2]/div[4]/table/tbody/tr[{0}]/td[1]/a@href".format(i))
+            #point_code = urlparse.parse_qs(point_code)['iplace'][0]
+            point_code = point_code.split("/")[4]
             point_code = point_code.lower()
             
-            point_price = self.browser.get_text("//*[@id=\"browse-data-table\"]/tbody/tr[{0}]/td[3]/a".format(i))
+            point_price = self.browser.get_text("//*[@id=\"browse\"]/div[2]/div[4]/table/tbody/tr[{0}]/td[3]/a".format(i))
             point_price = re.sub("[^0-9]", "", point_price)
             try:
                 point_price = int(point_price)
@@ -95,7 +96,7 @@ class SeleniumWrapper(object):
         time.sleep(self.load_timeout/3.) # init timeout
         
         for i in range(int(self.load_timeout)):
-            self.num_of_flights = self.browser.get_xpath_count("//*[@id=\"browse-data-table\"]/tbody/tr")
+            self.num_of_flights = self.browser.get_xpath_count("//*[@id=\"browse\"]/div[2]/div[4]/table/tbody/tr")
             if self.num_of_flights > 0:
                 break
             time.sleep(1)
@@ -105,7 +106,7 @@ class SeleniumWrapper(object):
             return
         
         for i in range(int(self.load_timeout)):
-            tmp = self.browser.get_xpath_count("//*[@id=\"browse-data-table\"]/tbody/tr")
+            tmp = self.browser.get_xpath_count("//*[@id=\"browse\"]/div[2]/div[4]/table/tbody/tr")
             m = self.num_of_flights
             self.num_of_flights = tmp
             
