@@ -1,15 +1,4 @@
 Skyscanner crawler
 ==================
 
-Crawls http://www.skyscanner.net and lists possible combined destinations in given month.
-
-------------------
-Requirements:
-
-* Selenium (2.35)
-* Python (2.6)
-
-Python libs:
-* argparse
-* networkx
-* selenium
+See project website: http://andre-wojtowicz.github.io/skyscanner-crawler
